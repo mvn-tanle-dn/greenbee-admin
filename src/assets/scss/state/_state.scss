@@ -1,0 +1,37 @@
+.distance {
+  padding-top: 35px;
+  padding-bottom: 120px;
+  background-color: #f7f6f2;
+  max-width: 100%;
+}
+
+.section-padding {
+  @include pxRem(padding, 50 0);
+}
+.block-title {
+  @include pxRem(font-size, 14);
+  @include pxRem(margin, 0 0 8);
+  color: map-get($colors, primary);
+}
+.section-top-title {
+  @include pxRem(margin, 30px 0);
+  text-align: center;
+}
+.section-title {
+  font-size: 28px;
+  font-family: Poppins, HelveticaNeue, Helvetica Neue, sans-serif;
+  font-weight: 700;
+  color: #222;
+  line-height: 1;
+  text-transform: capitalize;
+}
+.section-sub-title {
+  font-weight: 500;
+  display: block;
+  text-transform: initial;
+  font-size: 16px;
+  color: map-get($colors, txt-gray-dark);
+  font-family: Roboto, HelveticaNeue, Helvetica Neue, sans-serif;
+  margin-top: 10px;
+  line-height: 1.5;
+}

@@ -1,0 +1,106 @@
+// @import url(https://fonts.googleapis.com/css?family=Anonymous+Pro);
+@import url("https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&display=swap");
+@import "../base/variables";
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: $font-body;
+  // font-family: "Anonymous Pro", monospace;
+
+  font-weight: map-get($font-weight, normal);
+  font-size: $font-size-base;
+  letter-spacing: -0.025em;
+}
+p {
+  line-height: 1.45;
+  @include pxRem(font-size, 13);
+  color: map-get($colors, txt-gray-dark);
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+a {
+  color: map-get($colors, txt-black);
+  text-decoration: none;
+}
+img {
+  max-width: 100%;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: map-get($font-weight, medium);
+}
+h1 {
+  font-size: map-get($h-font-size, h1);
+}
+h2 {
+  font-size: map-get($h-font-size, h2);
+}
+h3 {
+  font-size: map-get($h-font-size, h3);
+}
+h4 {
+  font-size: map-get($h-font-size, h4);
+}
+h5 {
+  font-size: map-get($h-font-size, h5);
+}
+h6 {
+  font-size: map-get($h-font-size, h6);
+}
+.container {
+  @include pxRem(max-width, 1620);
+  @include pxRem(padding, 0 50);
+  margin: auto;
+
+  @include respond-below(medium) {
+    width: 90%;
+  }
+  @include respond-below(small) {
+    @include pxRem(padding, 0 10);
+  }
+}
+.main {
+  $header-tablet-height: map-get($height, header-tablet-height);
+  $header-mobie-height: map-get($height, header-mobie-height);
+  @include pxRem(margin-bottom, 32);
+  min-height: 100vh;
+  @include respond-below(small) {
+    margin-top: calc(#{$header-mobie-height} + #{f-pxRem(20)});
+  }
+}
+
+@each $color, $val in $colors {
+  .color-#{$color} {
+    color: $val;
+  }
+
+  .bg-#{$color} {
+    background-color: $val;
+  }
+}
+
+.btn {
+  padding: 7px 22px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+
+.btn-primary {
+  background-color: map-get($colors, dark-green);
+  color: map-get($colors, white);
+  &:hover {
+    background-color: map-get($colors, lighter-green);
+    border-color: map-get($colors, lighter-green);
+  }
+}
