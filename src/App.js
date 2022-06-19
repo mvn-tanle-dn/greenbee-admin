@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Components
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -15,38 +16,36 @@ import NewProduct from "./pages/NewProduct/NewProduct";
 
 // Styles
 import "./App.scss";
+import Login from "./pages/Login";
 
 function App() {
+  const navigate = useNavigate();
+  const access_token = localStorage.getItem("access_token");
+  console.log(access_token);
+
+  useEffect(() => {
+    if (!access_token) {
+      navigate("/login");
+    }
+  }, [access_token, navigate]);
+
   return (
-    <Router>
-      <Topbar />
+    <>
+      {access_token && <Topbar />}
       <div className="container">
-        <Sidebar />
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/users">
-            <UserList />
-          </Route>
-          <Route path="/user/:userId">
-            <User />
-          </Route>
-          <Route path="/newUser">
-            <NewUser />
-          </Route>
-          <Route path="/products">
-            <ProductList />
-          </Route>
-          <Route path="/product/:productId">
-            <Product />
-          </Route>
-          <Route path="/newproduct">
-            <NewProduct />
-          </Route>
-        </Switch>
+        {access_token && <Sidebar />}
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/user/:userId" element={<User />} />
+          <Route path="/newUser" element={<NewUser />} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/product/:productId" element={<Product />} />
+          <Route path="/newproduct" element={<NewProduct />} />
+        </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 

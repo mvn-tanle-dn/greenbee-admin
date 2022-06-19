@@ -7,7 +7,7 @@ import {
   Publish,
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
-import "./user.css";
+import "./user.scss";
 
 export default function User() {
   return (
