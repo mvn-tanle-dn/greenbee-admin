@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 // Styles
@@ -12,15 +12,24 @@ const App = () => {
   const navigate = useNavigate();
 
   const onFinish = (values) => {
-    login({ ...values }).then((res) => {
-      if (res.data.access_token) {
-        localStorage.setItem(
-          KEY_LOCAL_STORAGE.ACCESS_TOKEN,
-          res.data.access_token
-        );
-        navigate("/");
-      }
-    });
+    login({ ...values })
+      .then((res) => {
+        if (res.data.access_token) {
+          if (res.data.role === "ADMIN") {
+            localStorage.setItem(
+              KEY_LOCAL_STORAGE.ACCESS_TOKEN,
+              res.data.access_token
+            );
+            navigate("/");
+            message.success("You are successfully logged in");
+          } else {
+            message.error("The account is not admin role");
+          }
+        }
+      })
+      .catch((err) => {
+        message.error("Login Failed: Your user ID or password is incorrect");
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -92,7 +101,7 @@ const App = () => {
           }}
         >
           <Button type="primary" htmlType="Login">
-            Submit
+            Login
           </Button>
         </Form.Item>
       </Form>

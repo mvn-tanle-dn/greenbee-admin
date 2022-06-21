@@ -9,4 +9,7 @@ export const END_POINT = {
   RESET_PASSWORD: "reset-password",
   CHANGE_PASSWORD: "change-password",
   PRODUCTS: "products",
+  USERS: "users",
+  LASTUSERS: "lastusers",
+  LASTORDERS: "lastorders",
 };

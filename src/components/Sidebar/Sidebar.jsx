@@ -9,6 +9,7 @@ import {
   DynamicFeed,
   ChatBubbleOutline,
   FormatQuote,
+  Category,
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 
@@ -40,6 +41,12 @@ export default function Sidebar() {
               <li className="sidebarListItem">
                 <PermIdentity className="sidebarIcon" />
                 Users
+              </li>
+            </Link>
+            <Link to="/categories" className="link">
+              <li className="sidebarListItem">
+                <Category className="sidebarIcon" />
+                Categories
               </li>
             </Link>
             <Link to="/products" className="link">

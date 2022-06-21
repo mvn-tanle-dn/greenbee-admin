@@ -1,11 +1,23 @@
 import Chart from "../../components/Chart/Chart";
 import FeaturedInfo from "../../components/FeauturedInfo/FeaturedInfo";
-import "./home.css";
+import "./home.scss";
 import { userData } from "../../dummyData";
 import WidgetSm from "../../components/WidgetSm/WidgetSm";
 import WidgetLg from "../../components/WidgetLg/WidgetLg";
+import { useEffect, useState } from "react";
+import { getLastUsers } from "../../api/user";
 
 export default function Home() {
+  const [lastUsers, setLastUser] = useState([]);
+
+  useEffect(() => {
+    getLastUsers().then((res) => {
+      if (res.data) {
+        setLastUser(res.data.data);
+      }
+    });
+  }, []);
+
   return (
     <div className="home">
       <FeaturedInfo />
@@ -16,7 +28,7 @@ export default function Home() {
         dataKey="Active User"
       />
       <div className="homeWidgets">
-        <WidgetSm />
+        <WidgetSm data={lastUsers} />
         <WidgetLg />
       </div>
     </div>
