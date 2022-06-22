@@ -21,7 +21,6 @@ import Login from "./pages/Login";
 function App() {
   const navigate = useNavigate();
   const access_token = localStorage.getItem("access_token");
-  console.log(access_token);
 
   useEffect(() => {
     if (!access_token) {

@@ -7,16 +7,26 @@ import {
 import { Button, Dropdown, Space, Menu, message } from "antd";
 
 import "./topbar.scss";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../api/auth";
 
 export default function Topbar() {
-  const handleButtonClick = (e) => {
-    message.info("Click on left button.");
-    console.log("click left button", e);
-  };
+  const navigate = useNavigate();
 
   const handleMenuClick = (e) => {
-    message.info("Click on menu item.");
-    console.log("click", e);
+    if (e.key === 1) {
+      navigate("/profile");
+    } else if (e.key === "2") {
+      localStorage.removeItem("access_token");
+      navigate("/login");
+      logout()
+        .then((res) => {
+          message.success("Logout successfully!");
+        })
+        .catch((err) => {
+          // message.error(err.message);
+        });
+    }
   };
   const menu = (
     <Menu

@@ -1,10 +1,5 @@
 import { useState, useLayoutEffect } from "react";
-import { Link } from "react-router-dom";
 import { Space, Table, Tag, Input, Button } from "antd";
-
-import { DataGrid } from "@material-ui/data-grid";
-// Icons
-import { DeleteOutline } from "@material-ui/icons";
 
 // Styles
 import "./userList.scss";
@@ -116,7 +111,6 @@ export default function UserList() {
                 style={{ width: 600, marginRight: 40 }}
                 onChange={(e) => {
                   let value = e.target.value;
-                  console.log(value);
                   if (value === "") {
                     setData([...dataSource]);
                   } else {
@@ -148,6 +142,7 @@ export default function UserList() {
         )}
         columns={columns}
         dataSource={data}
+        rowKey={(record) => record.id}
       />
     </div>
   );

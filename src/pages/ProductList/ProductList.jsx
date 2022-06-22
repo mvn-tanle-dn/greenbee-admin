@@ -1,75 +1,56 @@
-import { DataGrid } from "@material-ui/data-grid";
-import { productRows } from "../../dummyData";
-import { Link } from "react-router-dom";
-import { useEffect, useLayoutEffect, useState } from "react";
-import { Space, Table, Tag } from "antd";
-
-// Icons
-import { DeleteOutline } from "@material-ui/icons";
+import { useEffect, useState } from "react";
+import {
+  Space,
+  Table,
+  Tag,
+  Modal,
+  Popconfirm,
+  Form,
+  Select,
+  Input,
+  Button,
+} from "antd";
 
 // Styles
 import "./productList.scss";
-import { getProducts } from "../../api/product";
+import { getProducts, deleteProduct } from "../../api/product";
+import { getCategories } from "../../api/category";
+import TextArea from "antd/lib/input/TextArea";
+
+const { Search } = Input;
 
 export default function ProductList() {
-  const [data, setData] = useState([]);
+  const [form] = Form.useForm();
+  const [products, setProducts] = useState([]);
+  const [productTemp, setProductTemp] = useState([]);
+  // const [categories, setCategories] = useState([]);
+  const [disabledInput, setDisableInput] = useState(true);
+  const [categoriesName, setCategoriesName] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState({});
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
+  const handleViewProduct = (product) => {
+    setCurrentProduct(product);
+    setIsModalVisible(true);
   };
 
-  useEffect(() => {
-    getProducts().then((res) => {
-      console.log(res);
-      setData(res.data.data);
+  const handleDeleteProduct = (id) => {
+    deleteProduct(id).then((res) => {
+      setProducts(
+        products.filter((product) => product.id !== res.data.data.id)
+      );
     });
-  }, []);
+  };
 
-  // const columns = [
-  //   { field: "id", headerName: "ID", width: 90 },
-  //   {
-  //     field: "product",
-  //     headerName: "Product",
-  //     width: 200,
-  //     renderCell: (params) => {
-  //       return (
-  //         <div className="productListItem">
-  //           <img className="productListImg" src={params.row.img} alt="" />
-  //           {params.row.name}
-  //         </div>
-  //       );
-  //     },
-  //   },
-  //   { field: "stock", headerName: "Stock", width: 200 },
-  //   {
-  //     field: "status",
-  //     headerName: "Status",
-  //     width: 120,
-  //   },
-  //   {
-  //     field: "price",
-  //     headerName: "Price",
-  //     width: 160,
-  //   },
-  //   {
-  //     field: "action",
-  //     headerName: "Action",
-  //     width: 150,
-  //     renderCell: (params) => {
-  //       return (
-  //         <>
-  //           <Link to={"/product/" + params.row.id}>
-  //             <button className="productListEdit">Edit</button>
-  //           </Link>
-  //           <DeleteOutline
-  //             className="productListDelete"
-  //             onClick={() => handleDelete(params.row.id)}
-  //           />
-  //         </>
-  //       );
-  //     },
-  //   },
-  // ];
+  const handleUpdateProduct = () => {};
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const columns = [
     {
@@ -89,17 +70,33 @@ export default function ProductList() {
     },
     {
       title: "Category Name",
-      // dataIndex: "category_name",
-      key: "category_id",
+      dataIndex: "category_name",
+      key: "category_name",
+      filters: [...categoriesName],
+      onFilter: (value, record) => record.category_id === value,
       render: (_, record) => {
-        console.log(record);
-        return record.category.category_name;
+        let colorByCategory;
+        switch (record.category.category_name) {
+          case "Vegetables":
+            colorByCategory = "green";
+            break;
+          case "Fresh Meats":
+            colorByCategory = "orange";
+            break;
+          default:
+            colorByCategory = "geekblue";
+            break;
+        }
+        return (
+          <Tag color={colorByCategory}>{record.category.category_name}</Tag>
+        );
       },
     },
     {
       title: "Origin Price",
       key: "origin_price",
       dataIndex: "origin_price",
+      sorter: (prev, next) => prev.origin_price - next.origin_price,
     },
     {
       title: "Sell Price",
@@ -108,32 +105,144 @@ export default function ProductList() {
     },
     {
       title: "Action",
+      dataIndex: "action",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a>View</a>
-          <a>Delete</a>
+          <span
+            className="product-btn-view"
+            onClick={() => handleViewProduct(record)}
+          >
+            View
+          </span>
+          <Popconfirm
+            title="Are you sure?"
+            onConfirm={() => handleDeleteProduct(record.id)}
+          >
+            <span className="product-btn-delete">Delete</span>
+          </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    form.setFieldsValue({ ...currentProduct });
+  }, [form, currentProduct]);
+
+  useEffect(() => {
     getProducts().then((res) => {
-      console.log(res.data.data);
+      setProducts(res.data.data);
+      setProductTemp(res.data.data);
+    });
+    getCategories().then((res) => {
+      const result = res.data.data;
+      // setCategories(result);
+      if (result) {
+        let categoriesName = result.map((category) => {
+          let categoryFilter = {
+            text: category.category_name,
+            value: category.id,
+          };
+          return categoryFilter;
+        });
+        setCategoriesName(categoriesName);
+      }
     });
   }, []);
 
   return (
     <div className="productList">
-      {/* <DataGrid
-        rows={data}
-        disableSelectionOnClick
+      <Table
+        title={() => (
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h5 style={{ fontSize: 22, fontWeight: "600" }}>Manager Users</h5>
+            <div style={{ display: "flex" }}>
+              <Search
+                style={{ width: 600, marginRight: 40 }}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value === "") {
+                    setProducts([...productTemp]);
+                  } else {
+                    let dataSearch = productTemp.filter(
+                      (product) =>
+                        product.product_name
+                          .toLowerCase()
+                          .includes(value.trim().toLowerCase()) ||
+                        product.id.toString().includes(value.trim()) ||
+                        product.category.id
+                          .toString()
+                          .includes(value.trim().toLowerCase()) ||
+                        product.category.category_name
+                          .toLowerCase()
+                          .includes(value.trim().toLowerCase())
+                    );
+                    setProducts([...dataSearch]);
+                  }
+                }}
+              />
+              <Button
+                type="primary"
+                style={{ display: "flex", gap: 5, alignItems: "center" }}
+                // onClick={() => setIsAddModalVisible(true)}
+              >
+                Add Category
+              </Button>
+            </div>
+          </div>
+        )}
         columns={columns}
-        pageSize={8}
-        checkboxSelection
-      /> */}
-      <Table columns={columns} dataSource={data} />
+        dataSource={products}
+        rowKey={(record) => record.id}
+      />
+      <Modal
+        title={`Product - ${currentProduct.product_name}`}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        className="detail-product-modal"
+        footer={false}
+      >
+        <Form
+          labelCol={{
+            span: 5,
+          }}
+          wrapperCol={{
+            span: 19,
+          }}
+          layout="horizontal"
+          name="modal_detail_product"
+          form={form}
+        >
+          <Form.Item label="ID" name="id">
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Product Name" name="product_name">
+            <Input disabled={disabledInput} />
+          </Form.Item>
+          <Form.Item label="Category">
+            <Select disabled={disabledInput}>
+              {categoriesName.map((category) => (
+                <Select.Option key={category.value} value={category.value}>
+                  {category.text}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="Origin Price" name="origin_price">
+            <Input disabled={disabledInput} type="number" min="1" />
+          </Form.Item>
+          <Form.Item label="Sell Price" name="sell_price">
+            <Input disabled={disabledInput} type="number" min="1" />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <TextArea disabled={disabledInput}></TextArea>
+          </Form.Item>
+        </Form>
+        <Button onClick={handleUpdateProduct}>Edit</Button>
+        <Button onClick={handleCancel}>Cancel</Button>
+      </Modal>
     </div>
   );
 }
