@@ -317,7 +317,9 @@ export default function ProductList() {
               span: 19,
             }}
           >
-            <Button onClick={handleUpdateProduct}>Update</Button>
+            <Button type="primary" onClick={handleUpdateProduct}>
+              Update
+            </Button>
             <Button onClick={handleCancel}>Cancel</Button>
           </Form.Item>
         </Form>

@@ -8,23 +8,12 @@ import "./style.scss";
 export default function Categories() {
   const [categories, setCategories] = useState([]);
 
-  const data = [
-    {
-      title: "Ant Design Title 1",
-    },
-    {
-      title: "Ant Design Title 2",
-    },
-    {
-      title: "Ant Design Title 3",
-    },
-    {
-      title: "Ant Design Title 4",
-    },
-  ];
+  const handleUpdate = () => {};
+
+  const handleDelete = () => {};
+
   useEffect(() => {
     getCategories().then((res) => {
-      console.log(res.data.data);
       setCategories(res.data.data);
     });
   }, []);
@@ -32,15 +21,21 @@ export default function Categories() {
     <div className="categories-page">
       <List
         itemLayout="horizontal"
-        size="small"
         dataSource={categories}
+        pagination={{
+          pageSize: 7,
+        }}
         renderItem={(category) => (
           <List.Item>
             <List.Item.Meta
               avatar={<Avatar src={category.icon} />}
-              title={<a href="https://ant.design">{category.category_name}</a>}
+              title={category.category_name}
               description={category.description}
             />
+            <p className="categories-page-action">
+              <a style={{ color: "#40a9ff" }}>Edit</a>
+              <a style={{ color: "#f5222d" }}>Delete</a>
+            </p>
           </List.Item>
         )}
       />

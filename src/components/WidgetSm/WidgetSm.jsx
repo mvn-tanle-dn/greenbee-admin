@@ -1,5 +1,3 @@
-import { Visibility } from "@material-ui/icons";
-
 // Style
 import "./widgetSm.scss";
 
@@ -23,10 +21,6 @@ export default function WidgetSm({ data }) {
                   </span>
                   <span className="widgetSmUserTitle">{user.email}</span>
                 </div>
-                <button className="widgetSmButton">
-                  <Visibility className="widgetSmIcon" />
-                  Display
-                </button>
               </li>
             );
           })}

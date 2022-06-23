@@ -12,6 +12,8 @@ export default function UserList() {
 
   const [dataSource, setDataSource] = useState([]);
 
+  const handleResetPassWord = () => {};
+
   useLayoutEffect(() => {
     getUsers().then((res) => {
       setData(res.data.data);
@@ -95,7 +97,6 @@ export default function UserList() {
       render: (_, record) => (
         <Space size="middle">
           <a>Reset Password</a>
-          <a>Delete</a>
         </Space>
       ),
     },
@@ -104,40 +105,31 @@ export default function UserList() {
     <div className="userList">
       <Table
         title={() => (
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
             <h5 style={{ fontSize: 22, fontWeight: "600" }}>Manager Users</h5>
-            <div style={{ display: "flex" }}>
-              <Search
-                style={{ width: 600, marginRight: 40 }}
-                onChange={(e) => {
-                  let value = e.target.value;
-                  if (value === "") {
-                    setData([...dataSource]);
-                  } else {
-                    let dataSearch = dataSource.filter(
-                      (item) =>
-                        item.first_name
-                          .toLowerCase()
-                          .includes(value.trim().toLowerCase()) ||
-                        item.last_name
-                          .toLowerCase()
-                          .includes(value.trim().toLowerCase()) ||
-                        item.email
-                          .toLowerCase()
-                          .includes(value.trim().toLowerCase())
-                    );
-                    setData([...dataSearch]);
-                  }
-                }}
-              />
-              <Button
-                type="primary"
-                style={{ display: "flex", gap: 5, alignItems: "center" }}
-                // onClick={() => setIsAddModalVisible(true)}
-              >
-                Add User
-              </Button>
-            </div>
+            <Search
+              style={{ width: 600, marginTop: "15px", marginBottom: "10px" }}
+              onChange={(e) => {
+                let value = e.target.value;
+                if (value === "") {
+                  setData([...dataSource]);
+                } else {
+                  let dataSearch = dataSource.filter(
+                    (item) =>
+                      item.first_name
+                        .toLowerCase()
+                        .includes(value.trim().toLowerCase()) ||
+                      item.last_name
+                        .toLowerCase()
+                        .includes(value.trim().toLowerCase()) ||
+                      item.email
+                        .toLowerCase()
+                        .includes(value.trim().toLowerCase())
+                  );
+                  setData([...dataSearch]);
+                }
+              }}
+            />
           </div>
         )}
         columns={columns}
