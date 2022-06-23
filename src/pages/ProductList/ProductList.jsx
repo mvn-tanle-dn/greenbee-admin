@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import {
   Space,
   Table,
@@ -9,7 +9,12 @@ import {
   Select,
   Input,
   Button,
+  Upload,
+  message,
 } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+
+import ImgCrop from "antd-img-crop";
 
 // Styles
 import "./productList.scss";
@@ -21,15 +26,56 @@ const { Search } = Input;
 
 export default function ProductList() {
   const [form] = Form.useForm();
+  const refSearch = useRef();
   const [products, setProducts] = useState([]);
   const [productTemp, setProductTemp] = useState([]);
   // const [categories, setCategories] = useState([]);
-  const [disabledInput, setDisableInput] = useState(true);
   const [categoriesName, setCategoriesName] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({});
 
-  const handleViewProduct = (product) => {
+  const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = () => {
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      formData.append("files[]", file);
+    });
+    setUploading(true); // You can use any AJAX library you like
+
+    fetch("https://www.mocky.io/v2/5cc8019d300000980a055e76", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setFileList([]);
+        message.success("upload successfully.");
+      })
+      .catch(() => {
+        message.error("upload failed.");
+      })
+      .finally(() => {
+        setUploading(false);
+      });
+  };
+
+  const props = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      setFileList([...fileList, file]);
+      return false;
+    },
+    fileList,
+  };
+
+  const handleEditProduct = (product) => {
     setCurrentProduct(product);
     setIsModalVisible(true);
   };
@@ -42,7 +88,9 @@ export default function ProductList() {
     });
   };
 
-  const handleUpdateProduct = () => {};
+  const handleUpdateProduct = () => {
+    // setDisableInput(false);
+  };
 
   const handleOk = () => {
     setIsModalVisible(false);
@@ -102,6 +150,7 @@ export default function ProductList() {
       title: "Sell Price",
       key: "sell_price",
       dataIndex: "sell_price",
+      sorter: (prev, next) => prev.sell_price - next.sell_price,
     },
     {
       title: "Action",
@@ -111,9 +160,9 @@ export default function ProductList() {
         <Space size="middle">
           <span
             className="product-btn-view"
-            onClick={() => handleViewProduct(record)}
+            onClick={() => handleEditProduct(record)}
           >
-            View
+            Edit
           </span>
           <Popconfirm
             title="Are you sure?"
@@ -126,18 +175,21 @@ export default function ProductList() {
     },
   ];
 
+  useLayoutEffect(() => {
+    refSearch.current.focus();
+  }, []);
+
   useEffect(() => {
     form.setFieldsValue({ ...currentProduct });
   }, [form, currentProduct]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getProducts().then((res) => {
       setProducts(res.data.data);
       setProductTemp(res.data.data);
     });
     getCategories().then((res) => {
       const result = res.data.data;
-      // setCategories(result);
       if (result) {
         let categoriesName = result.map((category) => {
           let categoryFilter = {
@@ -156,9 +208,12 @@ export default function ProductList() {
       <Table
         title={() => (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <h5 style={{ fontSize: 22, fontWeight: "600" }}>Manager Users</h5>
+            <h5 style={{ fontSize: 22, fontWeight: "600" }}>
+              Manager Products
+            </h5>
             <div style={{ display: "flex" }}>
               <Search
+                ref={refSearch}
                 style={{ width: 600, marginRight: 40 }}
                 onChange={(e) => {
                   let value = e.target.value;
@@ -187,7 +242,7 @@ export default function ProductList() {
                 style={{ display: "flex", gap: 5, alignItems: "center" }}
                 // onClick={() => setIsAddModalVisible(true)}
               >
-                Add Category
+                Add Product
               </Button>
             </div>
           </div>
@@ -219,10 +274,10 @@ export default function ProductList() {
             <Input disabled />
           </Form.Item>
           <Form.Item label="Product Name" name="product_name">
-            <Input disabled={disabledInput} />
+            <Input />
           </Form.Item>
-          <Form.Item label="Category">
-            <Select disabled={disabledInput}>
+          <Form.Item label="Category" name="category_id">
+            <Select>
               {categoriesName.map((category) => (
                 <Select.Option key={category.value} value={category.value}>
                   {category.text}
@@ -231,17 +286,41 @@ export default function ProductList() {
             </Select>
           </Form.Item>
           <Form.Item label="Origin Price" name="origin_price">
-            <Input disabled={disabledInput} type="number" min="1" />
+            <Input type="number" min="1" />
           </Form.Item>
           <Form.Item label="Sell Price" name="sell_price">
-            <Input disabled={disabledInput} type="number" min="1" />
+            <Input type="number" min="1" />
           </Form.Item>
           <Form.Item label="Description" name="description">
-            <TextArea disabled={disabledInput}></TextArea>
+            <TextArea></TextArea>
+          </Form.Item>
+          <Form.Item label="Images">
+            <Upload {...props}>
+              <Button icon={<UploadOutlined />}>Select File</Button>
+            </Upload>
+            <Button
+              type="primary"
+              onClick={handleUpload}
+              disabled={fileList.length === 0}
+              loading={uploading}
+              style={{
+                marginTop: 16,
+              }}
+            >
+              {uploading ? "Uploading" : "Start Upload"}
+            </Button>
+          </Form.Item>
+          <Form.Item
+            className="form-edit-product-action"
+            wrapperCol={{
+              offset: 5,
+              span: 19,
+            }}
+          >
+            <Button onClick={handleUpdateProduct}>Update</Button>
+            <Button onClick={handleCancel}>Cancel</Button>
           </Form.Item>
         </Form>
-        <Button onClick={handleUpdateProduct}>Edit</Button>
-        <Button onClick={handleCancel}>Cancel</Button>
       </Modal>
     </div>
   );

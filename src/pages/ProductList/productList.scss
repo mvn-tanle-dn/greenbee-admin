@@ -45,3 +45,12 @@
     min-height: 150px;
   }
 }
+
+.form-edit-product-action {
+  margin-top: 40px !important;
+  margin-bottom: 10px !important;
+  .ant-form-item-control-input-content {
+    display: flex;
+    gap: 10px;
+  }
+}

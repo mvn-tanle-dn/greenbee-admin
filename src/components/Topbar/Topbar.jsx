@@ -14,17 +14,17 @@ export default function Topbar() {
   const navigate = useNavigate();
 
   const handleMenuClick = (e) => {
-    if (e.key === 1) {
-      navigate("/profile");
-    } else if (e.key === "2") {
-      localStorage.removeItem("access_token");
-      navigate("/login");
+    if (e.key === "2") {
       logout()
         .then((res) => {
           message.success("Logout successfully!");
         })
         .catch((err) => {
           // message.error(err.message);
+        })
+        .finally(() => {
+          localStorage.removeItem("access_token");
+          navigate("/login");
         });
     }
   };
@@ -32,11 +32,11 @@ export default function Topbar() {
     <Menu
       onClick={handleMenuClick}
       items={[
-        {
-          label: "Profile",
-          key: "1",
-          icon: <InfoCircleFilled />,
-        },
+        // {
+        //   label: "Profile",
+        //   key: "1",
+        //   icon: <InfoCircleFilled />,
+        // },
         {
           label: "Logout",
           key: "2",

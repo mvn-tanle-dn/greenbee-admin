@@ -11,11 +11,22 @@ import {
   FormatQuote,
   Category,
 } from "@material-ui/icons";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 import "./sidebar.scss";
 
 export default function Sidebar() {
+  const location = useLocation();
+  const [locationPath, setLocationPath] = useState();
+
+  const checkMenuActive = (path, location) =>
+    path === location ? "active" : "";
+
+  useEffect(() => {
+    setLocationPath(location.pathname);
+  }, [location]);
+
   return (
     <div className="sidebar">
       <div className="sidebarWrapper">
@@ -23,7 +34,12 @@ export default function Sidebar() {
           <h3 className="sidebarTitle">Dashboard</h3>
           <ul className="sidebarList">
             <Link to="/" className="link">
-              <li className="sidebarListItem active">
+              <li
+                className={`sidebarListItem ${checkMenuActive(
+                  "/",
+                  locationPath
+                )}`}
+              >
                 <LineStyle className="sidebarIcon" />
                 Home
               </li>
@@ -38,19 +54,34 @@ export default function Sidebar() {
           <h3 className="sidebarTitle">Quick Menu</h3>
           <ul className="sidebarList">
             <Link to="/users" className="link">
-              <li className="sidebarListItem">
+              <li
+                className={`sidebarListItem ${checkMenuActive(
+                  "/users",
+                  locationPath
+                )}`}
+              >
                 <PermIdentity className="sidebarIcon" />
                 Users
               </li>
             </Link>
             <Link to="/categories" className="link">
-              <li className="sidebarListItem">
+              <li
+                className={`sidebarListItem ${checkMenuActive(
+                  "/categories",
+                  locationPath
+                )}`}
+              >
                 <Category className="sidebarIcon" />
                 Categories
               </li>
             </Link>
             <Link to="/products" className="link">
-              <li className="sidebarListItem">
+              <li
+                className={`sidebarListItem ${checkMenuActive(
+                  "/products",
+                  locationPath
+                )}`}
+              >
                 <Storefront className="sidebarIcon" />
                 Products
               </li>
@@ -60,7 +91,12 @@ export default function Sidebar() {
               Transactions
             </li>
             <Link to="/blogs" className="link">
-              <li className="sidebarListItem">
+              <li
+                className={`sidebarListItem ${checkMenuActive(
+                  "/blogs",
+                  locationPath
+                )}`}
+              >
                 <FormatQuote className="sidebarIcon" />
                 Blogs
               </li>

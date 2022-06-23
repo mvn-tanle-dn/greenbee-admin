@@ -12,11 +12,13 @@ import User from "./pages/User/User";
 import NewUser from "./pages/NewUser/NewUser";
 import ProductList from "./pages/ProductList/ProductList";
 import Product from "./pages/Product/Product";
+import Categories from "./pages/Categories/";
 import NewProduct from "./pages/NewProduct/NewProduct";
 
 // Styles
 import "./App.scss";
 import Login from "./pages/Login";
+import Blogs from "./pages/Blogs";
 
 function App() {
   const navigate = useNavigate();
@@ -42,6 +44,8 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/product/:productId" element={<Product />} />
           <Route path="/newproduct" element={<NewProduct />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/categories" element={<Categories />} />
         </Routes>
       </div>
     </>

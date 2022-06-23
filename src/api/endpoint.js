@@ -13,4 +13,5 @@ export const END_POINT = {
   CATEGORIES: "categories",
   LASTUSERS: "lastusers",
   LASTORDERS: "lastorders",
+  BLOG: "blogs",
 };
