@@ -86,10 +86,17 @@ export default function Sidebar() {
                 Products
               </li>
             </Link>
-            <li className="sidebarListItem">
-              <AttachMoney className="sidebarIcon" />
-              Transactions
-            </li>
+            <Link to="/transactions" className="link">
+              <li
+                className={`sidebarListItem ${checkMenuActive(
+                  "/transactions",
+                  locationPath
+                )}`}
+              >
+                <AttachMoney className="sidebarIcon" />
+                Transactions
+              </li>
+            </Link>
             <Link to="/blogs" className="link">
               <li
                 className={`sidebarListItem ${checkMenuActive(

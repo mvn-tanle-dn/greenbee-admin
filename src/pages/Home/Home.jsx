@@ -5,15 +5,22 @@ import { userData } from "../../dummyData";
 import WidgetSm from "../../components/WidgetSm/WidgetSm";
 import WidgetLg from "../../components/WidgetLg/WidgetLg";
 import { useEffect, useState } from "react";
-import { getLastUsers } from "../../api/user";
+import { getLatestUsers } from "../../api/user";
+import { getLatestTransactions } from "../../api/cart";
 
 export default function Home() {
-  const [lastUsers, setLastUser] = useState([]);
+  const [latestUsers, setLatestUser] = useState([]);
+  const [latestTransactions, setLatestTransactions] = useState([]);
 
   useEffect(() => {
-    getLastUsers().then((res) => {
+    getLatestUsers().then((res) => {
       if (res.data) {
-        setLastUser(res.data.data);
+        setLatestUser(res.data.data);
+      }
+    });
+    getLatestTransactions().then((res) => {
+      if (res.data) {
+        setLatestTransactions(res.data.data);
       }
     });
   }, []);
@@ -28,8 +35,8 @@ export default function Home() {
         dataKey="Active User"
       />
       <div className="homeWidgets">
-        <WidgetSm data={lastUsers} />
-        <WidgetLg />
+        <WidgetSm data={latestUsers} />
+        <WidgetLg data={latestTransactions} />
       </div>
     </div>
   );

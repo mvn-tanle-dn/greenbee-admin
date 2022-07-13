@@ -19,6 +19,7 @@ import NewProduct from "./pages/NewProduct/NewProduct";
 import "./App.scss";
 import Login from "./pages/Login";
 import Blogs from "./pages/Blogs";
+import Transactions from "./pages/Transactions";
 
 function App() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ function App() {
           <Route path="/newproduct" element={<NewProduct />} />
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/categories" element={<Categories />} />
+          <Route path="/transactions" element={<Transactions />} />
         </Routes>
       </div>
     </>

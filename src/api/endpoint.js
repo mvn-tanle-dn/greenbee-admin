@@ -11,7 +11,8 @@ export const END_POINT = {
   PRODUCTS: "products",
   USERS: "users",
   CATEGORIES: "categories",
-  LASTUSERS: "lastusers",
-  LASTORDERS: "lastorders",
-  BLOG: "blogs",
+  LATESTTUSERS: "lastusers",
+  BLOGS: "blogs",
+  ORDERS: "orders",
+  LATESTORDERS: "lastorders",
 };

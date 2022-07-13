@@ -6,8 +6,8 @@ export const getUsers = () => {
   return axiosClient.get(END_POINT.USERS);
 };
 
-export const getLastUsers = () => {
-  return axiosClient.get(END_POINT.LASTUSERS);
+export const getLatestUsers = () => {
+  return axiosClient.get(END_POINT.LATESTTUSERS);
 };
 
 export const resetUserPassword = () => {
